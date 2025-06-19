@@ -63,7 +63,7 @@ if (AdminE?.email !== "example@gmail.com") {
         const email = Admin.email;
 
         const getKyc  = async () => {
-            await axios.get("http://localhost:8080/fetchAllKyc").then((data)=>{
+            await axios.get("/fetchAllKyc").then((data)=>{
                 if(data.data.kyc){
                     setUserAuth(data.data.kyc)
                 }
@@ -202,7 +202,7 @@ if (AdminE?.email !== "example@gmail.com") {
         handleShow9();
         setLoading9(true);
 
-        await axios.post("http://localhost:8080/approveKyc", {kycApprove}).then((data)=>{
+        await axios.post("/approveKyc", {kycApprove}).then((data)=>{
             if(data.data.success){
                 setLoading9(false)
                 toast.success(data.data.success)
@@ -218,7 +218,7 @@ if (AdminE?.email !== "example@gmail.com") {
         handleShow8();
         setLoading8(true);
 
-        await axios.post("http://localhost:8080/declineKyc", {kycDecline}).then((data)=>{
+        await axios.post("/declineKyc", {kycDecline}).then((data)=>{
             if(data.data.success){
                 setLoading8(false)
                 toast.success(data.data.success)
@@ -234,7 +234,7 @@ if (AdminE?.email !== "example@gmail.com") {
         handleShow7();
         setLoading7(true);
 
-        await axios.post("http://localhost:8080/deleteKyc", {kycAction}).then((data)=>{
+        await axios.post("/deleteKyc", {kycAction}).then((data)=>{
             if(data.data.success){
                 toast.success(data.data.success);
                 setLoading7(false);
