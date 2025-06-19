@@ -2,18 +2,26 @@ const express = require("express");
 const router = express.Router();
 const cors = require("cors");
 
+const allowedOrigins = [
+  'https://anon-stake-verse.vercel.app',
+  'https://anon-stake-verse-kyc.vercel.app',
+];
+
 const corsOptions = {
-  origin: 'https://anon-stake-verse.vercel.app',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: 'GET,POST,PUT,DELETE,OPTIONS',
   allowedHeaders: 'Content-Type,Authorization',
 };
 
-//https://anon-stake-verse.vercel.app 
-
 router.use(cors(corsOptions));
 router.options('*', cors(corsOptions));
-
 const {
   test,
   Delete,
