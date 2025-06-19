@@ -1,50 +1,288 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const Admin = require("../models/adminModel");
+const OtpModel = require("../models/OtpModel");
 const bankModel = require("../models/bankModel");
 const chatModel = require("../models/chatModel");
 const cryptoModel = require("../models/cryptoModel");
 const adminMessage = require("../models/adminMessage");
 const accountUpgradeModel = require("../models/accountLevel");
+const userInfomation = require("../models/userInformation");
 const { hashPassword, comparePassword } = require("../helpers/auth");
 
-// const upgradeAccount = async (req, res) => {
-//   const { ID, ULevel } = req.body;
 
-//   const ifExist = await accountUpgradeModel.findOne({ userID: ID });
-//   const checkUser = await User.findOne({_id : ID});
+const DeclineKyc = async (req, res) => {
+  const { kycDecline } = req.body;
 
-//   if(!checkUser){
-//     return res.status(404).json({
-//       error: "Unidentify user ID"
-//     })
-//   }
+  const kycDec = await OtpModel.updateOne({_id: kycDecline}, {$set: {kycStatus: "Declined"}});
+  if(kycDec){
+    return res.json({
+      success: "Kyc Declined Successfully!"
+    })
+  }
 
-//   if (!ifExist) {
-//     await accountUpgradeModel.create({
-//       userID: ID,
-//       accountLevel: ULevel
-//     })
+  return res.json({
+    error: "Error Declining Kyc"
+  })
+}
 
-//     return res.status(200).json({
-//       success: `User: ${ID} has been upgraded to Level: ${ULevel}`
-//     })
-//   }
+const DeleteKyc = async (req, res) => {
+  const { kycAction } = req.body;
+  const deleteAction = await OtpModel.deleteOne({_id: kycAction});
 
-//   if (ifExist && ifExist.accountLevel == ULevel) {
-//     return res.json({
-//       error: `user account already in Level: ${ifExist.accountLevel}`
-//     })
-//   }
+  if(deleteAction){
+    return res.json({
+      success: "Kyc Request deleted succesfully!"
+    })
+  }
 
-//   await accountUpgradeModel.updateOne({ userID: ID }, { $set: { accountLevel: ULevel } });
-//   return res.json({
-//     success: `user ${ID} has been upgraded to level ${ULevel}`
-//   })
+  return res.json({
+    error: "Error Deleting Kyc Request"
+  })
+}
 
-// }
+const ApproveKyc = async (req, res) => {
+  const { kycApprove } = req.body;
 
-const mongoose = require("mongoose");
+  const kycDec = await OtpModel.updateOne({_id: kycApprove}, {$set: {kycStatus: "Approved"}});
+  if(kycDec){
+    return res.json({
+      success: "Kyc Approved Successfully!"
+    })
+  }
+
+  return res.json({
+    error: "Error Approving Kyc"
+  })
+}
+
+const fetchAllKyc = async (req, res) => {
+  const kyc = await OtpModel.find({});
+  return res.json({
+    kyc: kyc
+  })
+}
+
+const fetchKyc = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.json({
+      error: "Email Required!"
+    })
+  }
+
+  const ifVerifiedOtp = await OtpModel.findOne({ email: email });
+
+  if (ifVerifiedOtp && ifVerifiedOtp.kycStatus === "Verified") {
+    return res.json({
+      status: "Verified"
+    })
+  }
+
+  if (ifVerifiedOtp && ifVerifiedOtp.kycStatus === "Inreview") {
+    return res.json({
+      status: "Inreview"
+    })
+  }
+
+  return res.json({
+    status: "Unverified"
+  })
+}
+
+const fetchOTP = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.json({
+      error: "Email Required!"
+    })
+  }
+
+  const ifVerifiedOtp = await OtpModel.findOne({ email: email });
+
+  if (ifVerifiedOtp && ifVerifiedOtp.status === "Verified") {
+    return res.json({
+      status: "Verified"
+    })
+  }
+
+  return res.json({
+    status: "Unverified"
+  })
+}
+
+const verifyOtp = async (req, res) => {
+  const { otp } = req.body;
+
+  if (!otp) {
+    return res.json({
+      error: "Please Enter OTP Code before submiting!"
+    })
+  }
+
+  const ifCorrect = await OtpModel.findOne({ Otp: otp });
+  if (!ifCorrect) {
+    return res.json({
+      error: "Incorrect OTP, Please Re-Check Yout E-Mail for New OTP"
+    })
+  }
+
+  await OtpModel.updateOne({ Otp: otp }, { $set: { status: "Verified" } });
+  return res.status(200).json({
+    success: "Successfuly Verified OTP"
+  })
+}
+
+const getOTP = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.json({
+      error: "email is required to request for OTP"
+    })
+  }
+
+  const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000);
+  };
+
+  const sendOTP = async (email) => {
+    const otp = generateOTP();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your OTP Code",
+      text: `Hi [${email}],
+Your verification code is:
+
+[${otp}]
+
+Enter this code to verify your email address.
+This code will expire in 15 minutes.
+
+If you didn’t request this, you can ignore the email.
+
+Thanks.`,
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      const ifExist = await OtpModel.findOne({ email: email });
+      if (ifExist) {
+        await OtpModel.updateOne({ email: email }, { $set: { Otp: otp } })
+        console.log(`OTP Exist, sent successfully to ${email}: ${otp}`);
+        return res.json({
+          message: "OTP Sent Successfully!",
+          OTP: otp
+        })
+      }
+
+      await OtpModel.create({
+        email: email,
+        Otp: otp
+      })
+
+      console.log(`OTP Created, sent successfully to ${email}: ${otp}`);
+      return res.json({
+        message: "OTP Sent Successfully!",
+        OTP: otp
+      })
+
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      return null;
+    }
+  };
+
+  const userEmail = email; // Replace with user's email
+  sendOTP(userEmail)
+
+}
+
+const userInfo = async (req, res) => {
+  const { email, Id, Country } = req.body;
+  const check = await userInfomation.findOne({ email });
+  if (check) {
+    const update = await userInfomation.updateOne(
+      { email: email },
+      { $set: { email: `${email}`, Id: `${Id}`, Country: `${Country}` } }
+    );
+    if (update) {
+      return res.json({
+        message: "Updated",
+      });
+    }
+  }
+  const create = await userInfomation.create({
+    email,
+    Id,
+    Country,
+  });
+  if (create) {
+    return res.json({
+      message: "success",
+    });
+  }
+};
+
+const citizenId = async (req, res) => {
+  const { email, imgSrc } = req.body;
+
+  const checkIF = await OtpModel.findOne({ email: email });
+
+  if (checkIF) {
+    await OtpModel.updateOne({ email: email }, { $set: {kycStatus: "Inreview", kycPic: imgSrc} });
+    const updateUserPic = await userInfomation.updateOne(
+      { email: email },
+      { $set: { IdProfile: imgSrc } }
+    );
+    const updateUser = await User.updateOne(
+      { email: email },
+      { $set: { citizenId: `${imgSrc}`, verification: `Inreview` } }
+    );
+    if (updateUser && updateUserPic) {
+      return res.json({
+        success: "Success",
+      });
+    }
+  } else {
+    await OtpModel.create({
+      email: email,
+      Otp: "",
+      status: "Unverified",
+      kycStatus: "Inreview",
+      kycPic: imgSrc
+    })
+
+    const updateUserPic = await userInfomation.updateOne(
+      { email: email },
+      { $set: { IdProfile: imgSrc } }
+    );
+    const updateUser = await User.updateOne(
+      { email: email },
+      { $set: { citizenId: `${imgSrc}`, verification: `Inreview` } }
+    );
+    if (updateUser && updateUserPic) {
+      return res.json({
+        success: "Success",
+      });
+    }
+  }
+
+};
+
+//-------------------------------------------------------
 
 const getAccountLevel = async (req, res) => {
       const {ID} = req.body;
@@ -830,6 +1068,16 @@ module.exports = {
   getMessage,
   createUser,
   loginAdmin,
+  DeclineKyc,
+  DeleteKyc,
+  ApproveKyc,
+  fetchAllKyc,
+  fetchKyc,
+  fetchOTP,
+  verifyOtp,
+  getOTP,
+  userInfo,
+  citizenId,
   addBalance,
   getAdminChat,
   withdrawBank,

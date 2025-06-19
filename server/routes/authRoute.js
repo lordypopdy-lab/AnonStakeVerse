@@ -3,18 +3,54 @@ const router = express.Router();
 const cors = require("cors");
 
 const corsOptions = {
-    origin: 'https://anon-stake-verse.vercel.app', 
-    credentials: true,
-    methods: 'GET,POST,PUT,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type,Authorization',
-  };
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: 'GET,POST,PUT,DELETE,OPTIONS',
+  allowedHeaders: 'Content-Type,Authorization',
+};
 
-  //http://localhost:5173 
-  
-  router.use(cors(corsOptions));
-  router.options('*', cors(corsOptions)); 
+//https://anon-stake-verse.vercel.app
 
-const { test, Delete, Decline, Approve, loginUser, createUser, deleteChat, getMessage, loginAdmin, chatSend, getUser, getUsers, addBalance , withdrawBank, getAdminChat, getAccountLevel, withdrawCrypto, AdminGetCrypto, AdminGetBankR, upgradeAccount, getBankRecords, getNotification, getCryptoRecords, notificationAdder, userNotification} = require("../controllers/authController");
+router.use(cors(corsOptions));
+router.options('*', cors(corsOptions));
+
+const {
+  test,
+  Delete,
+  Decline,
+  Approve,
+  loginUser,
+  createUser,
+  deleteChat,
+  getMessage,
+  loginAdmin,
+  chatSend,
+  getUser,
+  getUsers,
+  addBalance,
+  withdrawBank,
+  getAdminChat,
+  getAccountLevel,
+  withdrawCrypto,
+  AdminGetCrypto,
+  AdminGetBankR,
+  upgradeAccount,
+  getBankRecords,
+  getNotification,
+  getCryptoRecords,
+  notificationAdder,
+  userNotification,
+  DeclineKyc,
+  DeleteKyc,
+  ApproveKyc,
+  fetchAllKyc,
+  fetchKyc,
+  fetchOTP,
+  verifyOtp,
+  getOTP,
+  userInfo,
+  citizenId,
+} = require("../controllers/authController");
 
 router.get('/test', test);
 router.post("/Delete", Delete);
@@ -23,6 +59,16 @@ router.post("/Decline", Decline);
 router.post("/getUser", getUser);
 router.get("/getUsers", getUsers);
 router.post('/login', loginUser);
+router.post("/getOTP", getOTP);
+router.post("/approveKyc", ApproveKyc);
+router.post("/deleteKyc", DeleteKyc);
+router.post("/declineKyc", DeclineKyc);
+router.post("/userInfo", userInfo);
+router.post("/fetchOTP", fetchOTP);
+router.post("/fetchKyc", fetchKyc);
+router.post("/verifyOtp", verifyOtp);
+router.get("/fetchAllKyc", fetchAllKyc);
+router.post("/citizenId", citizenId);
 router.post("/chatSend", chatSend);
 router.post('/register', createUser);
 router.post('/adminAuth', loginAdmin);

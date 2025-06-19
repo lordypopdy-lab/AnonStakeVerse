@@ -368,6 +368,7 @@ const Register = () => {
                     <div className="form-group mt-3">
                         <select value={data.account} onChange={(e) => setData({ ...data, account: e.target.value })} className="data form-control" style={{ marginLeft: "2px" }} >
                             <option>--Select Account--</option>
+                            <option>Betting Portfolio <i className="bi bi-trophy"></i></option>
                             <option>Forex Trading</option>
                             <option>Stock Trading</option>
                             <option>Binary Option Trading</option>
