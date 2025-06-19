@@ -3,13 +3,13 @@ const router = express.Router();
 const cors = require("cors");
 
 const corsOptions = {
-  origin: 'https://anon-stake-verse.vercel.app',
+  origin: 'http://localhost:5173',
   credentials: true,
   methods: 'GET,POST,PUT,DELETE,OPTIONS',
   allowedHeaders: 'Content-Type,Authorization',
 };
 
-//http://localhost:5173 
+//https://anon-stake-verse.vercel.app 
 
 router.use(cors(corsOptions));
 router.options('*', cors(corsOptions));
@@ -50,6 +50,7 @@ const {
   getOTP,
   userInfo,
   citizenId,
+  createNotification
 } = require("../controllers/authController");
 
 router.get('/test', test);
@@ -87,6 +88,7 @@ router.post("/getAccountLevel", getAccountLevel);
 router.post("/getNotification", getNotification);
 router.post("/userNotification", userNotification);
 router.post("/getCryptoRecords", getCryptoRecords);
+router.post("/notification", createNotification);
 
 
 module.exports = router;

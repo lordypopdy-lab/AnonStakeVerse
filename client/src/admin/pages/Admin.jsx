@@ -16,11 +16,8 @@ import toast from "react-hot-toast"
 
 const Admin = () => {
 const AdminE = JSON.parse(localStorage.getItem("admin"));
-if(AdminE.email =="example@gmail.com"){
-    localStorage.removeItem("admin");
-    window.location.href = "/admin/login";
-}
-if (AdminE?.email !== "example001@gmail.com") {
+
+if (AdminE?.email !== "example@gmail.com") {
     localStorage.removeItem("admin");
     window.location.href = "/admin/login";
 }
@@ -66,7 +63,7 @@ if (AdminE?.email !== "example001@gmail.com") {
         const email = Admin.email;
 
         const getKyc  = async () => {
-            await axios.get("https://bitclub-server.vercel.app/fetchAllKyc").then((data)=>{
+            await axios.get("http://localhost:8080/fetchAllKyc").then((data)=>{
                 if(data.data.kyc){
                     setUserAuth(data.data.kyc)
                 }
@@ -205,7 +202,7 @@ if (AdminE?.email !== "example001@gmail.com") {
         handleShow9();
         setLoading9(true);
 
-        await axios.post("https://bitclub-server.vercel.app/approveKyc", {kycApprove}).then((data)=>{
+        await axios.post("http://localhost:8080/approveKyc", {kycApprove}).then((data)=>{
             if(data.data.success){
                 setLoading9(false)
                 toast.success(data.data.success)
@@ -221,7 +218,7 @@ if (AdminE?.email !== "example001@gmail.com") {
         handleShow8();
         setLoading8(true);
 
-        await axios.post("https://bitclub-server.vercel.app/declineKyc", {kycDecline}).then((data)=>{
+        await axios.post("http://localhost:8080/declineKyc", {kycDecline}).then((data)=>{
             if(data.data.success){
                 setLoading8(false)
                 toast.success(data.data.success)
@@ -237,7 +234,7 @@ if (AdminE?.email !== "example001@gmail.com") {
         handleShow7();
         setLoading7(true);
 
-        await axios.post("https://bitclub-server.vercel.app/deleteKyc", {kycAction}).then((data)=>{
+        await axios.post("http://localhost:8080/deleteKyc", {kycAction}).then((data)=>{
             if(data.data.success){
                 toast.success(data.data.success);
                 setLoading7(false);

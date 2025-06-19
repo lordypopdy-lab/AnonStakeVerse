@@ -8,8 +8,102 @@ const cryptoModel = require("../models/cryptoModel");
 const adminMessage = require("../models/adminMessage");
 const accountUpgradeModel = require("../models/accountLevel");
 const userInfomation = require("../models/userInformation");
+const NotificationModel = require("../models/notification");
 const { hashPassword, comparePassword } = require("../helpers/auth");
 
+const nodemailer = require('nodemailer');
+
+
+const createNotification = async (req, res) => {
+  const { email, For } = req.body;
+
+  const NotificationList = {
+    activationHeader: "Contract Activated! 🎉",
+    activationMessage:
+      "Your contract has been successfully ✅ activated.We are excited 😍 to support you and ensure a seamless experience. Enjoy the benefits of your new contract!",
+    reActivationHeader: "Contract Reactivated! 🎉",
+    reActivationMessage:
+      "Your contract has been successfully ✅ reactivated. We are thrilled 😇 to have you back! Enjoy the continued benefits and services. Thank you for choosing us again!",
+    pauseAndWithdrawHeader: "Contract Paused and Withdrawn! 🎉",
+    pauseAndWithdrawMessage:
+      "Your contract has been successfully ✅ paused and withdrawn",
+    sendHeader: "Success! 👍",
+    sendMessage: "Ethers has been sent successfully. Transaction completed ✅",
+    getProfitHeader: "Success! 👍",
+    getProfitMessage:
+      "Ethers has been sent successfully. Profit withdrawn successfully. Transaction completed ✅",
+    verificationHeader: "Submitted Successfully! ✅",
+    verificationMessage:
+      "Thank you for submitting your ID for verification. We have received your documents, and they are currently under review. You will be notified once the verification process is complete.",
+  };
+
+  const timestamp = new Date().getTime();
+
+
+  if (email && For == "IDverification") {
+    const createNew = await NotificationModel.create({
+      email,
+      For: For,
+      message: NotificationList.verificationMessage,
+      header: NotificationList.verificationHeader,
+      timestamp: timestamp,
+    });
+
+    const user = await User.findOne({ email });
+    const updateUserNotification = await User.updateOne(
+      { email: email },
+      { $set: { NotificationSeen: `${1 + user.NotificationSeen}` } }
+    );
+    if (createNew && updateUserNotification) {
+      return res.json({
+        success: "Success",
+      });
+    }
+  }
+
+  if (email && For == "sendSuccess") {
+    const createNew = await notificationModel.create({
+      email,
+      For: For,
+      message: NotificationList.sendMessage,
+      header: NotificationList.sendHeader,
+      timestamp: timestamp,
+    });
+
+    const user = await User.findOne({ email });
+    const updateUserNotification = await User.updateOne(
+      { email: email },
+      { $set: { NotificationSeen: `${1 + user.NotificationSeen}` } }
+    );
+    if (createNew && updateUserNotification) {
+      const { valueSend, amount } = req.body;
+
+      const timestamp = new Date().getTime();
+      const type = "Sent";
+      const Status = "Success";
+      const valueEth = valueSend;
+      const valueUsd = amount;
+
+      const CreateHistory = await history.create({
+        email,
+        type,
+        Status,
+        valueEth,
+        valueUsd,
+        timestamp,
+      });
+      if (CreateHistory) {
+        return res.json({
+          success: "Success",
+        });
+      }
+    }
+  } else {
+    return res.json({
+      error: "Error Creating Notification for Sending",
+    });
+  }
+};
 
 const DeclineKyc = async (req, res) => {
   const { kycDecline } = req.body;
@@ -1090,5 +1184,6 @@ module.exports = {
   getBankRecords,
   getCryptoRecords,
   userNotification,
+  createNotification,
   notificationAdder,
 };

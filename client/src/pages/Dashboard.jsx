@@ -30,7 +30,7 @@ const Dashboard = () => {
 
         const fetchKyc = async () => {
             try {
-                await axios.post("https://bitclub-server.vercel.app/fetchKyc", { email }).then((data) => {
+                await axios.post("/fetchKyc", { email }).then((data) => {
                     if (data.data.status) {
                         setKyc(data.data.status)
                     }
@@ -42,7 +42,7 @@ const Dashboard = () => {
 
         const fetchOTP = async () => {
             try {
-                await axios.post("https://bitclub-server.vercel.app/fetchOTP", { email }).then((data) => {
+                await axios.post("/fetchOTP", { email }).then((data) => {
                     if (data.data.status) {
                         setOtp(data.data.status)
                     }
@@ -262,7 +262,7 @@ const Dashboard = () => {
                                                     </tr>
                                                     <tr>
                                                         <td className="text-warning p-0">Verify Account<i className="mdi mdi-account-multiple-plus text-danger"></i></td>
-                                                        <td><label className="badge p-0 float-right"><a className="btn btn-success" href="https://kyc-rho.vercel.app/">Start Now</a></label></td>
+                                                        <td><label className="badge p-0 float-right"><a className="btn btn-success" href="http://localhost:3000">Start Now</a></label></td>
                                                     </tr>
                                                     <tr>
                                                         <td className="text-warning p-0"> Account Type<i className="mdi mdi-account-check text-danger"></i></td>
