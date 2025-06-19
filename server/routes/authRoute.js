@@ -2,11 +2,13 @@ const express = require("express");
 const router = express.Router();
 const cors = require("cors");
 
+// ✅ Allowed origins for CORS
 const allowedOrigins = [
   'https://anon-stake-verse.vercel.app',
   'https://anon-stake-verse-kyc.vercel.app',
 ];
 
+// ✅ CORS options
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -20,11 +22,13 @@ const corsOptions = {
   allowedHeaders: 'Content-Type,Authorization',
 };
 
+// ✅ Apply CORS globally to all requests
 router.use(cors(corsOptions));
 
-// (Optional) Handle preflight requests manually
-// router.options('*', cors(corsOptions));
+// ✅ Handle preflight requests for all routes
+router.options('*', cors(corsOptions));
 
+// ✅ Import all controllers
 const {
   test,
   Delete,
@@ -64,7 +68,7 @@ const {
   createNotification
 } = require("../controllers/authController");
 
-// Define routes
+// ✅ Define routes
 router.get('/test', test);
 router.post("/Delete", Delete);
 router.post("/Approve", Approve);
