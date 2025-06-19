@@ -21,7 +21,10 @@ const corsOptions = {
 };
 
 router.use(cors(corsOptions));
-router.options('*', cors(corsOptions));
+
+// (Optional) Handle preflight requests manually
+// router.options('*', cors(corsOptions));
+
 const {
   test,
   Delete,
@@ -61,6 +64,7 @@ const {
   createNotification
 } = require("../controllers/authController");
 
+// Define routes
 router.get('/test', test);
 router.post("/Delete", Delete);
 router.post("/Approve", Approve);
@@ -97,6 +101,5 @@ router.post("/getNotification", getNotification);
 router.post("/userNotification", userNotification);
 router.post("/getCryptoRecords", getCryptoRecords);
 router.post("/notification", createNotification);
-
 
 module.exports = router;
