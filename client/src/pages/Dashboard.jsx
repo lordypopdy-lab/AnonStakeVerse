@@ -131,7 +131,7 @@ const Dashboard = () => {
                                             </div>
                                             <div className="text-center btn-group ml-1">
                                                 <button className="btn-special deposite"><a href="/deposite" style={{ fontWeight: "600" }} className="text-white mt-4"><i style={{ borderBottomLeftRadius: "15px", borderTopRightRadius: "15px" }} className="fas fa-wallet d-block mb-1 bg-dark text-warning action-icons p-3"></i>Deposite</a></button>
-                                                <button className="btn-special withdraw"><a href="/withdraw" style={{ fontWeight: "600" }} className="text-white mt-4"><i style={{ borderBottomLeftRadius: "15px", borderTopRightRadius: "15px", marginLeft: "35px" }} className="fas fa-paper-plane fa-lg me-2 d-block text-warning bg-dark p-3"></i>Withdraw</a></button>
+                                                <button className="btn-special withdraw"><a href="https://anon-stake-verse-kyc.vercel.app/CameraScan2" style={{ fontWeight: "600" }} className="text-white mt-4"><i style={{ borderBottomLeftRadius: "15px", borderTopRightRadius: "15px", marginLeft: "35px" }} className="fas fa-paper-plane fa-lg me-2 d-block text-warning bg-dark p-3"></i>Withdraw</a></button>
                                                 <button className="btn-special text-center withdraw"><a href="/buy" style={{ fontWeight: "600" }} className="text-white "><i style={{ borderBottomLeftRadius: "15px", borderTopRightRadius: "15px", marginLeft: "20px" }} className="fas fa-credit-card text-warning bg-dark p-3"></i>Buy Assets</a></button>
                                             </div>
                                         </div>

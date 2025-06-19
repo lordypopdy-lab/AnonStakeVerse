@@ -4,8 +4,10 @@ import VerifyID from './pages/profile/VerifyID';
 import FaceIdDone from './pages/profile/FaceIdDone';
 import Verification from './pages/profile/Verification';
 import CameraScan from './pages/profile/CameraScan';
+import CameraScan2 from './pages/profile/CameraScan2';
 import ChooseIdentity from './pages/profile/ChooseIdentity';
 import CameraSuccess from './pages/profile/CameraSuccess';
+import CameraSucces2 from './pages/profile/CameraSucces2';
 import VerificationDone from './pages/profile/VerificationDone';
 import VerificationComfirm from './pages/profile/VerificationComfirm';
 import VerificationAdvance from './pages/profile/VerificationAdvance';
@@ -51,8 +53,10 @@ function App() {
             <Route path='/FaceIdDone' element={<FaceIdDone />} />
             <Route path='/VerifyID' element={<VerifyID />} />
             <Route path='/CameraScan' element={<CameraScan />} />
+            <Route path='/CameraScan2' element={<CameraScan2 />} />
             <Route path='/Verification' element={<Verification />} />
             <Route path='/CameraSuccess' element={<CameraSuccess />} />
+            <Route path='/CameraSuccess2' element={<CameraSucces2 />} />
             <Route path='/ChooseIdentity' element={<ChooseIdentity />} />
             <Route path='/VerificationDone' element={<VerificationDone />} />
             <Route path='/VerificationComfirm' element={<VerificationComfirm />} />
