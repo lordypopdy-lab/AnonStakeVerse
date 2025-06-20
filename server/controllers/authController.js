@@ -1051,7 +1051,7 @@ const addBalance = async (req, res) => {
       message = `Hi ${name},\n\n🎉 Your deposit of $${value} has been successfully added to your account.\n\n💼 New Deposit Balance: $${newBalance}\n\nThank you for trusting BITCLUB.\n\n🚀 BITCLUB Team`;
       break;
 
-    case "bonus":
+    case "bonuse":
       newBalance = (user.bonuse || 0) + value;
       await User.updateOne({ _id: id }, { $set: { bonuse: newBalance } });
 
