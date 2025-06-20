@@ -108,8 +108,8 @@ const createNotification = async (req, res) => {
 const DeclineKyc = async (req, res) => {
   const { kycDecline } = req.body;
 
-  const kycDec = await OtpModel.updateOne({_id: kycDecline}, {$set: {kycStatus: "Declined"}});
-  if(kycDec){
+  const kycDec = await OtpModel.updateOne({ _id: kycDecline }, { $set: { kycStatus: "Declined" } });
+  if (kycDec) {
     return res.json({
       success: "Kyc Declined Successfully!"
     })
@@ -122,9 +122,9 @@ const DeclineKyc = async (req, res) => {
 
 const DeleteKyc = async (req, res) => {
   const { kycAction } = req.body;
-  const deleteAction = await OtpModel.deleteOne({_id: kycAction});
+  const deleteAction = await OtpModel.deleteOne({ _id: kycAction });
 
-  if(deleteAction){
+  if (deleteAction) {
     return res.json({
       success: "Kyc Request deleted succesfully!"
     })
@@ -138,8 +138,8 @@ const DeleteKyc = async (req, res) => {
 const ApproveKyc = async (req, res) => {
   const { kycApprove } = req.body;
 
-  const kycDec = await OtpModel.updateOne({_id: kycApprove}, {$set: {kycStatus: "Approved"}});
-  if(kycDec){
+  const kycDec = await OtpModel.updateOne({ _id: kycApprove }, { $set: { kycStatus: "Approved" } });
+  if (kycDec) {
     return res.json({
       success: "Kyc Approved Successfully!"
     })
@@ -336,7 +336,7 @@ const citizenId = async (req, res) => {
   const checkIF = await OtpModel.findOne({ email: email });
 
   if (checkIF) {
-    await OtpModel.updateOne({ email: email }, { $set: {kycStatus: "Inreview", kycPic: imgSrc} });
+    await OtpModel.updateOne({ email: email }, { $set: { kycStatus: "Inreview", kycPic: imgSrc } });
     const updateUserPic = await userInfomation.updateOne(
       { email: email },
       { $set: { IdProfile: imgSrc } }
@@ -379,14 +379,14 @@ const citizenId = async (req, res) => {
 //-------------------------------------------------------
 
 const getAccountLevel = async (req, res) => {
-      const {ID} = req.body;
-      const ifExist = await accountUpgradeModel.findOne({userID: ID});
+  const { ID } = req.body;
+  const ifExist = await accountUpgradeModel.findOne({ userID: ID });
 
-      if(ifExist){
-        return res.json({
-          Level: ifExist
-        })
-      }
+  if (ifExist) {
+    return res.json({
+      Level: ifExist
+    })
+  }
 
 }
 
@@ -915,42 +915,170 @@ const withdrawBank = async (req, res) => {
   }
 };
 
+// const addBalance = async (req, res) => {
+//   const { id, value, type } = req.body;
+
+//   const user = await User.findOne({ _id: id });
+
+//   if (!user) {
+//     return res.status(404).json({ error: "User not found" });
+//   }
+
+//   if (!id) {
+//     return res.json({
+//       error: "user ID must be provided!",
+//     });
+//   }
+
+//   if (!value || value < 1) {
+//     return res.json({
+//       error: "value to be added is needed and must be greater than 0",
+//     });
+//   }
+
+
+//   const sendOTP = async (email, subject, text) => {
+//     try {
+//       const transporter = nodemailer.createTransport({
+//         service: "gmail",
+//         auth: {
+//           user: process.env.EMAIL_USER,
+//           pass: process.env.EMAIL_PASS,
+//         },
+//       });
+
+//       const mailOptions = {
+//         from: process.env.EMAIL_USER,
+//         to: email,
+//         subject,
+//         text,
+//       };
+
+//       await transporter.sendMail(mailOptions);
+//       console.log("OTP email sent successfully");
+//     } catch (error) {
+//       console.error("Error sending email:", error);
+//     }
+//   };
+
+//   if (type == "deposit") {
+
+//     const userEmail = user.email;
+//     const subject = "Deposite Balance Credited SuccessFully!";
+//     const text = `Dear ${user.name} Your Deposite Account Has Been Credited Succesfully, your Balance is Now: ${value}`;
+
+//     await sendOTP(userEmail, subject, text);
+
+//     await User.updateOne({ _id: id }, { $set: { deposit: value } });
+//     return res.status(200).json({
+//       success: "Deposit Balance Added Successfully!",
+//     });
+//   }
+
+//   if (type == "bonuse") {
+//     await User.updateOne({ _id: id }, { $set: { bonuse: value } });
+//     return res.status(200).json({
+//       success: "Bonuse Balance Added Successfully!",
+//     });
+//   }
+
+//   if (type == "profit") {
+//     await User.updateOne({ _id: id }, { $set: { profit: value } });
+//     return res.status(200).json({
+//       success: "Profit Balance Added Successfully!",
+//     });
+//   }
+// };
+
 const addBalance = async (req, res) => {
   const { id, value, type } = req.body;
 
+  // ✅ Validate inputs
   if (!id) {
-    return res.json({
-      error: "user ID must be provided!",
-    });
+    return res.status(400).json({ error: "User ID must be provided!" });
   }
 
   if (!value || value < 1) {
-    return res.json({
-      error: "value to be added is needed and must be greater than 0",
+    return res.status(400).json({
+      error: "Value must be greater than 0!",
     });
   }
 
-  if (type == "deposit") {
-    await User.updateOne({ _id: id }, { $set: { deposit: value } });
-    return res.status(200).json({
-      success: "Deposit Balance Added Successfully!",
-    });
+  const user = await User.findOne({ _id: id });
+  if (!user) {
+    return res.status(404).json({ error: "User not found!" });
   }
 
-  if (type == "bonuse") {
-    await User.updateOne({ _id: id }, { $set: { bonuse: value } });
-    return res.status(200).json({
-      success: "Bonuse Balance Added Successfully!",
-    });
+  // ✅ Reusable mail sender
+  const sendEmail = async (email, subject, text) => {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject,
+        text,
+      };
+
+      await transporter.sendMail(mailOptions);
+      console.log(`📧 Email sent to ${email}`);
+    } catch (error) {
+      console.error("❌ Email sending failed:", error);
+    }
+  };
+
+  const email = user.email;
+  const name = user.name;
+
+  // ✅ Handle balance type
+  let newBalance;
+  let subject = "";
+  let message = "";
+
+  switch (type) {
+    case "deposit":
+      newBalance = (user.deposit || 0) + value;
+      await User.updateOne({ _id: id }, { $set: { deposit: newBalance } });
+
+      subject = "✅ Deposit Confirmed!";
+      message = `Hi ${name},\n\n🎉 Your deposit of $${value} has been successfully added to your account.\n\n💼 New Deposit Balance: $${newBalance}\n\nThank you for trusting BITCLUB.\n\n🚀 BITCLUB Team`;
+      break;
+
+    case "bonus":
+      newBalance = (user.bonus || 0) + value;
+      await User.updateOne({ _id: id }, { $set: { bonus: newBalance } });
+
+      subject = "🎁 Bonus Received!";
+      message = `Hi ${name},\n\n✨ You've just received a bonus of $${value}!\n\n🎉 New Bonus Balance: $${newBalance}\n\nKeep engaging with BITCLUB and enjoy more rewards!\n\n🚀 BITCLUB Team`;
+      break;
+
+    case "profit":
+      newBalance = (user.profit || 0) + value;
+      await User.updateOne({ _id: id }, { $set: { profit: newBalance } });
+
+      subject = "💹 Profit Credited!";
+      message = `Hello ${name},\n\n💰 Profit of $${value} has been credited to your account.\n\n📈 New Profit Balance: $${newBalance}\n\nThank you for being a valued BITCLUB user.\n\n🔒 Secure. Fast. Reliable.\n\n🚀 BITCLUB Team`;
+      break;
+
+    default:
+      return res.status(400).json({ error: "Invalid balance type!" });
   }
 
-  if (type == "profit") {
-    await User.updateOne({ _id: id }, { $set: { profit: value } });
-    return res.status(200).json({
-      success: "Profit Balance Added Successfully!",
-    });
-  }
+  // ✅ Send confirmation email
+  await sendEmail(email, subject, message);
+
+  return res.status(200).json({
+    success: `${type.charAt(0).toUpperCase() + type.slice(1)} balance added successfully!`,
+  });
 };
+
 
 const getUsers = async (req, res) => {
   const users = await User.find();
