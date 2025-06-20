@@ -1052,8 +1052,8 @@ const addBalance = async (req, res) => {
       break;
 
     case "bonus":
-      newBalance = (user.bonus || 0) + value;
-      await User.updateOne({ _id: id }, { $set: { bonus: newBalance } });
+      newBalance = (user.bonuse || 0) + value;
+      await User.updateOne({ _id: id }, { $set: { bonuse: newBalance } });
 
       subject = "🎁 Bonus Received!";
       message = `Hi ${name},\n\n✨ You've just received a bonus of $${value}!\n\n🎉 New Bonus Balance: $${newBalance}\n\nKeep engaging with BITCLUB and enjoy more rewards!\n\n🚀 BITCLUB Team`;
