@@ -13,7 +13,6 @@ const { hashPassword, comparePassword } = require("../helpers/auth");
 
 const nodemailer = require('nodemailer');
 
-
 const createNotification = async (req, res) => {
   const { email, For } = req.body;
 
