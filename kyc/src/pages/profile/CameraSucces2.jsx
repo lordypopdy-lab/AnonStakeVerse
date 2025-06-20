@@ -21,7 +21,7 @@ const CameraSucces2 = () => {
                             </div>
                             <h2 className="text-surface text-center">Successful!</h2>
                             <p className="text-large text-center mt-8">Your personal information Is Saved Click Next to Continue</p>
-                            <a href="https://anon-stake-verse.vercel.app/dashboard" className="tf-btn lg primary mt-40">Next</a>
+                            <a href="https://anon-stake-verse.vercel.app/withdraw" className="tf-btn lg primary mt-40">Next</a>
                         </div>
                     </div>
 

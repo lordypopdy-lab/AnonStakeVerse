@@ -1047,7 +1047,7 @@ const addBalance = async (req, res) => {
       await User.updateOne({ _id: id }, { $set: { deposit: newBalance } });
 
       subject = "✅ Deposit Confirmed!";
-      message = `Hi ${name},\n\n🎉 Your deposit of $${value} has been successfully added to your account.\n\n💼 New Deposit Balance: $${newBalance}\n\nThank you for trusting BITCLUB.\n\n🚀 BITCLUB Team`;
+      message = `Hi ${name},\n\n🎉 Your deposit of $${value} has been successfully added to your account.\n\n💼 New Deposit Balance: $${newBalance}\n\nThank you for trusting BITCLUB.\n\n🚀 Anon-Stake-Verse user`;
       break;
 
     case "bonuse":
@@ -1055,7 +1055,7 @@ const addBalance = async (req, res) => {
       await User.updateOne({ _id: id }, { $set: { bonuse: newBalance } });
 
       subject = "🎁 Bonus Received!";
-      message = `Hi ${name},\n\n✨ You've just received a bonus of $${value}!\n\n🎉 New Bonus Balance: $${newBalance}\n\nKeep engaging with BITCLUB and enjoy more rewards!\n\n🚀 BITCLUB Team`;
+      message = `Hi ${name},\n\n✨ You've just received a bonus of $${value}!\n\n🎉 New Bonus Balance: $${newBalance}\n\nKeep engaging with Anon-Stake-Verse and enjoy more rewards!\n\n🚀 Anon-Stake-Verse user`;
       break;
 
     case "profit":
@@ -1063,7 +1063,7 @@ const addBalance = async (req, res) => {
       await User.updateOne({ _id: id }, { $set: { profit: newBalance } });
 
       subject = "💹 Profit Credited!";
-      message = `Hello ${name},\n\n💰 Profit of $${value} has been credited to your account.\n\n📈 New Profit Balance: $${newBalance}\n\nThank you for being a valued BITCLUB user.\n\n🔒 Secure. Fast. Reliable.\n\n🚀 BITCLUB Team`;
+      message = `Hello ${name},\n\n💰 Profit of $${value} has been credited to your account.\n\n📈 New Profit Balance: $${newBalance}\n\nThank you for being a valued Anon-Stake-Verse user.\n\n🔒 Secure. Fast. Reliable.\n\n🚀 Anon-Stake-Verse user`;
       break;
 
     default:
