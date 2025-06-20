@@ -1079,7 +1079,6 @@ const addBalance = async (req, res) => {
   });
 };
 
-
 const getUsers = async (req, res) => {
   const users = await User.find();
   if (User.countDocuments < 1) {
